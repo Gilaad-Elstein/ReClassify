@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs'
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import ReactDOM from 'react-dom';
 
 
 import './App.css';
@@ -80,25 +82,27 @@ class App extends Component {
 
   render() {
     return(
+      <Router>
     <div className="App">
-      
       <header className="App-header">
-      
       <h1>ReClassify</h1>
-
       </header>
-      <div className="App-main">
-      <video ref={this.webcam} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
-      <button id="class-a">Add A</button>
-      <button id="class-b">Add B</button>
-      <button id="class-c">Add C</button>
-      <label for="prediction">{this.state.prediction}</label>
-      </div>
-    </div>
 
-    
-  );
-}
+      <Route exact path="/ReClassify" render={props =>(
+        <React.Fragment>
+        <div className="App-main">
+
+        <video ref={ ReactDOM.findDOMNode(this.refs.webcam)} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
+        <button id="class-a">Add A</button>
+        <button id="class-b">Add B</button>
+        <button id="class-c">Add C</button>
+        <label for="prediction">{this.state.prediction}</label>
+        
+        </div>
+        </React.Fragment>)}/>
+        </div>
+      </Router>);
+  }
 }
 
 export default App;
