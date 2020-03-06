@@ -1,26 +1,104 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import * as mobilenet from '@tensorflow-models/mobilenet';
+import * as tf from '@tensorflow/tfjs'
+import * as knnClassifier from '@tensorflow-models/knn-classifier';
+
+
 import './App.css';
 
-function App() {
-  return (
+
+let net;
+const classifier = knnClassifier.create();
+
+class App extends Component {
+
+
+  constructor(props){
+    super(props);
+    this.state = {
+      prediction: "none"
+    }
+    this.webcam = React.createRef();
+  }
+
+  componentDidMount(){
+    this.app();
+  }
+
+  async app() {
+    console.log('Loading mobilenet..');
+  
+    // Load the model.
+    net = await mobilenet.load();
+    console.log('Successfully loaded model');
+  
+    // Create an object from Tensorflow.js data API which could capture image 
+    // from the web camera as Tensor.
+    const webcam = await tf.data.webcam(this.webcam.current);
+  
+    // Reads an image from the webcam and associates it with a specific class
+    // index.
+    const addExample = async classId => {
+      // Capture an image from the web camera.
+      const img = await webcam.capture();
+  
+      // Get the intermediate activation of MobileNet 'conv_preds' and pass that
+      // to the KNN classifier.
+      const activation = net.infer(img, 'conv_preds');
+  
+      // Pass the intermediate activation to the classifier.
+      classifier.addExample(activation, classId);
+  
+      // Dispose the tensor to release the memory.
+      img.dispose();
+    };
+  
+    // When clicking a button, add an example for that class.
+    document.getElementById('class-a').addEventListener('click', () => addExample(0));
+    document.getElementById('class-b').addEventListener('click', () => addExample(1));
+    document.getElementById('class-c').addEventListener('click', () => addExample(2));
+  
+    while (true) {
+      if (classifier.getNumClasses() > 0) {
+        const img = await webcam.capture();
+  
+        // Get the activation from mobilenet from the webcam.
+        const activation = net.infer(img, 'conv_preds');
+        // Get the most likely class and confidence from the classifier module.
+        const result = await classifier.predictClass(activation);
+  
+        const classes = ['A', 'B', 'C'];
+        console.log("prediction: " + classes[result.label] + "\n probability: " + result.confidences[result.label]);
+        this.setState({prediction: classes[result.label]})
+        // Dispose the tensor to release the memory.
+        img.dispose();
+      }
+  
+      await tf.nextFrame();
+    }
+  }
+
+  render() {
+    return(
     <div className="App">
+      
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      
+      <h1>ReClassify</h1>
+
       </header>
+      <div className="App-main">
+      <video ref={this.webcam} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
+      <button id="class-a">Add A</button>
+      <button id="class-b">Add B</button>
+      <button id="class-c">Add C</button>
+      <label for="prediction">{this.state.prediction}</label>
+      </div>
     </div>
+
+    
   );
+}
 }
 
 export default App;
