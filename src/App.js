@@ -17,7 +17,9 @@ class App extends Component {
     super(props);
     this.state = {
       Prediction: "none",
-      Running: true
+      Confidence:  0,
+      Running: true,
+      Reset: false
     }
     this.webcam = React.createRef();
   }
@@ -60,6 +62,10 @@ class App extends Component {
     document.getElementById('class-c').addEventListener('click', () => addExample(2));
   
     while (this.state.Running) {
+      if (this.state.Reset){
+        classifier.clearAllClasses();
+        this.setState({Confidence: 0, Prediction: "none", Reset: false});
+      }
       if (classifier.getNumClasses() > 0) {
         const img = await webcam.capture();
   
@@ -70,34 +76,37 @@ class App extends Component {
   
         const classes = ['A', 'B', 'C'];
         console.log("prediction: " + classes[result.label] + "\n probability: " + result.confidences[result.label]);
-        this.setState({Prediction: classes[result.label]})
+        this.setState({Prediction: classes[result.label], Confidence: result.confidences[result.label]})
         // Dispose the tensor to release the memory.
         img.dispose();
       }
   
       await tf.nextFrame();
     }
+    this.setState({Prediction: "Model suspended.", Confidence: 0});
   }
 
   toggleRunning = () => {
     this.setState({Running: !this.state.Running});
     if(!this.state.Running){
+      this.setState({Prediction: "none"});
       this.app();
     }
   }
 
-  isDevReact() {
-    try {
-      React.createClass({});
-    } catch(e) {
-      if (e.message.indexOf('render') >= 0) {
-        return true;  // A nice, specific error message
-      } else {
-        return false;  // A generic error message
-      }
-    }
-    return false;  // should never happen, but play it safe.
-  };
+  getConfidence(){
+    return "Confidence: " +  (this.state.Running ? 
+            (this.state.Confidence * 100).toFixed(0) + "%" : " --- ");
+  }
+
+  getPrediction(){
+    return this.state.Running ? 
+    "Prediction: " + (this.state.Prediction) : "Model suspended";
+  }
+
+  requestReset = () => {
+    this.setState({Reset: true});
+  }
 
   render() {
     return(
@@ -106,15 +115,20 @@ class App extends Component {
       <header className="App-header">
       
       <h1>ReClassify</h1>
+      <h4 className="h4">On the fly image classification</h4>
 
       </header>
       <div className="App-main">
       <video ref={this.webcam} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
-      <button id="class-a">Add A</button>
-      <button id="class-b">Add B</button>
-      <button id="class-c">Add C</button>
-    <label htmlFor="prediction">{this.state.Prediction}</label>
-    <button id="toggleRunning" onClick={this.toggleRunning}>Start/Stop</button>
+      <label className="label" htmlFor="prediction">{this.state.Prediction}<br></br>{this.getConfidence()}</label>
+      <div className="buttons">
+      <button id="class-a" >Class A</button>&nbsp;&nbsp;
+      <button id="class-b">Class B</button>&nbsp;&nbsp;
+      <button id="class-c">Class C</button></div>
+      <br></br>
+    <button id="toggleRunning" onClick={this.toggleRunning}>Start/Stop</button>&nbsp;&nbsp;
+    <button id="reset" onClick={this.requestReset}>Reset model</button>
+
       </div>
     </div>
 
