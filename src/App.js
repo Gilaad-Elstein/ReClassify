@@ -16,7 +16,8 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      Prediction: "none"
+      Prediction: "none",
+      Running: true
     }
     this.webcam = React.createRef();
   }
@@ -58,7 +59,7 @@ class App extends Component {
     document.getElementById('class-b').addEventListener('click', () => addExample(1));
     document.getElementById('class-c').addEventListener('click', () => addExample(2));
   
-    while (true) {
+    while (this.state.Running) {
       if (classifier.getNumClasses() > 0) {
         const img = await webcam.capture();
   
@@ -78,6 +79,13 @@ class App extends Component {
     }
   }
 
+  toggleRunning = () => {
+    this.setState({Running: !this.state.Running});
+    if(!this.state.Running){
+      this.app();
+    }
+  }
+
   render() {
     return(
     <div className="App">
@@ -92,7 +100,8 @@ class App extends Component {
       <button id="class-a">Add A</button>
       <button id="class-b">Add B</button>
       <button id="class-c">Add C</button>
-    <label for="prediction">{this.state.Prediction}</label>
+    <label htmlFor="prediction">{this.state.Prediction}</label>
+    <button id="toggleRunning" onClick={this.toggleRunning}>Start/Stop</button>
       </div>
     </div>
 
