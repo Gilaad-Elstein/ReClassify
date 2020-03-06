@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs'
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
-import ReactDOM from 'react-dom';
 
 
 import './App.css';
@@ -18,7 +16,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      prediction: "none"
+      Prediction: "none"
     }
     this.webcam = React.createRef();
   }
@@ -71,7 +69,7 @@ class App extends Component {
   
         const classes = ['A', 'B', 'C'];
         console.log("prediction: " + classes[result.label] + "\n probability: " + result.confidences[result.label]);
-        this.setState({prediction: classes[result.label]})
+        this.setState({Prediction: classes[result.label]})
         // Dispose the tensor to release the memory.
         img.dispose();
       }
@@ -82,27 +80,25 @@ class App extends Component {
 
   render() {
     return(
-      <Router>
     <div className="App">
+      
       <header className="App-header">
+      
       <h1>ReClassify</h1>
+
       </header>
+      <div className="App-main">
+      <video ref={this.webcam} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
+      <button id="class-a">Add A</button>
+      <button id="class-b">Add B</button>
+      <button id="class-c">Add C</button>
+    <label for="prediction">{this.state.Prediction}</label>
+      </div>
+    </div>
 
-      <Route exact path="/ReClassify" render={props =>(
-        <React.Fragment>
-        <div className="App-main">
-
-        <video ref={ ReactDOM.findDOMNode(this.refs.webcam)} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
-        <button id="class-a">Add A</button>
-        <button id="class-b">Add B</button>
-        <button id="class-c">Add C</button>
-        <label for="prediction">{this.state.prediction}</label>
-        
-        </div>
-        </React.Fragment>)}/>
-        </div>
-      </Router>);
-  }
+    
+  );
+}
 }
 
 export default App;
