@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import Popup from './Popup';  
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs'
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
-
 import {
   BrowserView,
   MobileView,
@@ -12,8 +12,6 @@ import {
 
 import videoLoadingImage from './img/camera.png';
 import cameraFlipIcon from './img/flipCamera.png';
-
-
 import './App.css';
 
 
@@ -32,9 +30,16 @@ class App extends Component {
       Reset: false,
       Webcam: null,
       FacingMode: 'environment',
+      ShowPopup: true
     }
     this.webcamRef = React.createRef();
   }
+
+  togglePopup() {  
+    this.setState({  
+         ShowPopup: !this.state.ShowPopup  
+    });  
+     }  
 
 
   _handleKeyDown = (event) => {
@@ -182,7 +187,37 @@ class App extends Component {
     <div className="App">
       
       <header className="App-header">
-      
+      {this.state.ShowPopup ?  
+        <Popup  
+          header='ReClassify'
+          text="Reclassify is an on the fly image classifier.~n
+
+          It can learn to tell the difference between facial
+          expressions such as a smile or a frown, it can tell
+          genders apart, differentiate hand gestures or classify
+          inanimate objects with very little training.~n~n
+         
+          Point your camera at an object or scene and
+          click one of the class buttons.~n~n
+          
+          Every time you click a class button, ReClassify learns to associate
+          what it sees with that class.~n~n
+          
+          Try taking different perspectives on the object
+          to maximize the model's confidence.~n~n
+         
+          Repeat with a different object or scene and 
+          a different class button.~n~n
+          
+          When you are done simply point your camera at an
+          object of one of the classes and see the model's
+          prediction.~n~n
+          
+          Enjoy!"
+          closePopup={this.togglePopup.bind(this)}  
+        />  
+        : null  
+        } 
       <h1>ReClassify</h1>
       <h4 className="h4">On the fly image classification</h4>
 
@@ -209,7 +244,7 @@ class App extends Component {
       <button id="class-b">Class B</button>&nbsp;&nbsp;
       <button id="class-c">Class C</button></div>
       <br></br>
-      <button id="reset" onClick={this.requestReset}>Reset model</button>
+      <button id="reset" onClick={this.requestReset}>Reset model</button>  
 
       </div>
     </div>

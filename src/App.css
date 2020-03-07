@@ -12,8 +12,8 @@
     font-size: calc(10px + 2vmin);
     color: rgb(204, 186, 186);
     border-radius: 15%;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 5%;
+    margin-right: 5%;
     margin-bottom: 0;
 }
 
@@ -39,4 +39,28 @@
 .h4 {
     margin-top: 0;
     text-align: center;
+}
+
+.popup {
+    font-size: 80%;
+    text-align: center;
+    /* position: fixed; */
+    width: 95%;
+    height: 80%;
+    border-radius: 25%;
+    left: 0;
+    right: 0;
+    bottom: 10;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.popup\_inner {
+    left: 25%;
+    right: 25%;
+    top: 25%;
+    bottom: 25%;
+    margin: auto;
+    border-radius: 20px;
+    background: white;
 }
