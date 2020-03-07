@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/ReClassify/static/css/main.1c17fd37.chunk.css",
-    "main.js": "/ReClassify/static/js/main.a2590adf.chunk.js",
-    "main.js.map": "/ReClassify/static/js/main.a2590adf.chunk.js.map",
+    "main.css": "/ReClassify/static/css/main.1d3288c1.chunk.css",
+    "main.js": "/ReClassify/static/js/main.8467b139.chunk.js",
+    "main.js.map": "/ReClassify/static/js/main.8467b139.chunk.js.map",
     "runtime-main.js": "/ReClassify/static/js/runtime-main.a25530ff.js",
     "runtime-main.js.map": "/ReClassify/static/js/runtime-main.a25530ff.js.map",
     "static/js/2.1b4b53f8.chunk.js": "/ReClassify/static/js/2.1b4b53f8.chunk.js",
     "static/js/2.1b4b53f8.chunk.js.map": "/ReClassify/static/js/2.1b4b53f8.chunk.js.map",
     "index.html": "/ReClassify/index.html",
-    "precache-manifest.506ea44c04a65d867f459a08c785d1a5.js": "/ReClassify/precache-manifest.506ea44c04a65d867f459a08c785d1a5.js",
+    "precache-manifest.2b9bcc5419ac54a2af19a4f75577e312.js": "/ReClassify/precache-manifest.2b9bcc5419ac54a2af19a4f75577e312.js",
     "service-worker.js": "/ReClassify/service-worker.js",
-    "static/css/main.1c17fd37.chunk.css.map": "/ReClassify/static/css/main.1c17fd37.chunk.css.map",
+    "static/css/main.1d3288c1.chunk.css.map": "/ReClassify/static/css/main.1d3288c1.chunk.css.map",
     "static/js/2.1b4b53f8.chunk.js.LICENSE.txt": "/ReClassify/static/js/2.1b4b53f8.chunk.js.LICENSE.txt",
     "static/media/flipCamera.png": "/ReClassify/static/media/flipCamera.e4276148.png"
   },
   "entrypoints": [
     "static/js/runtime-main.a25530ff.js",
     "static/js/2.1b4b53f8.chunk.js",
-    "static/css/main.1c17fd37.chunk.css",
-    "static/js/main.a2590adf.chunk.js"
+    "static/css/main.1d3288c1.chunk.css",
+    "static/js/main.8467b139.chunk.js"
   ]
 }
