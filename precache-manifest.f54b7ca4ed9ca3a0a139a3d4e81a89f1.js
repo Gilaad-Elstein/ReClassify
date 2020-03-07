@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "eff9d252b7b9ac9918a5c78176aacc0d",
+    "revision": "9c37aeb819564b1a8175c00ed33355ce",
     "url": "/ReClassify/index.html"
   },
   {
-    "revision": "3b79c23511fe4d8375b9",
-    "url": "/ReClassify/static/css/main.e6978317.chunk.css"
+    "revision": "c4ddf9dbd5c73e3145b3",
+    "url": "/ReClassify/static/css/main.58537cee.chunk.css"
   },
   {
-    "revision": "03b1f0ef68fc2c4e1a06",
-    "url": "/ReClassify/static/js/2.d8c6c547.chunk.js"
+    "revision": "26291e96e4c44e2fe88e",
+    "url": "/ReClassify/static/js/2.1b4b53f8.chunk.js"
   },
   {
     "revision": "37164a3e1234ba67b547c321cc40c717",
-    "url": "/ReClassify/static/js/2.d8c6c547.chunk.js.LICENSE.txt"
+    "url": "/ReClassify/static/js/2.1b4b53f8.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "3b79c23511fe4d8375b9",
-    "url": "/ReClassify/static/js/main.fd9c97cb.chunk.js"
+    "revision": "c4ddf9dbd5c73e3145b3",
+    "url": "/ReClassify/static/js/main.ef1e81ea.chunk.js"
   },
   {
     "revision": "4beb5f32f5d0c75a00c5",
