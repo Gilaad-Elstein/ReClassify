@@ -3,7 +3,6 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs'
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
 
-
 import {
   BrowserView,
   MobileView,
