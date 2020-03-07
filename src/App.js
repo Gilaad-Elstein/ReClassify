@@ -3,11 +3,12 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs'
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
 
+import videoLoadingImage from './img/camera.png'
+
 
 import './App.css';
 
 
-let net;
 const classifier = knnClassifier.create();
 
 class App extends Component {
@@ -18,42 +19,82 @@ class App extends Component {
     this.state = {
       Prediction: "none",
       Confidence:  0,
-      Running: true,
-      Reset: false
+      ModelRunning: true,
+      VideoCapture: true,
+      Reset: false,
+      Webcam: null,
     }
-    this.webcam = React.createRef();
+    this.webcamRef = React.createRef();
   }
+
+
+  _handleKeyDown = (event) => {
+    var ESCAPE_KEY = 27;
+      switch( event.keyCode ) {
+          case ESCAPE_KEY:
+              this.toggleVideoCapture();
+              break;
+          default: 
+              break;
+      }
+  }
+
+  async maybeLoadWebcam(){
+    if (this.state.Webcam === null){
+      // Create an object from Tensorflow.js data API which could capture image 
+      // from the web camera as Tensor.
+      const webcam = await tf.data.webcam(this.webcamRef.current);
+      this.setState({Webcam: webcam});
+      this.setState({Prediction: "none"})
+    }
+    return this.state.Webcam;
+  }
+
+  async toggleVideoCapture(){
+  if(this.state.VideoCapture){
+    this.state.Webcam.stop();
+    this.setState({VideoCapture: false});
+  }
+  else{
+    const webcam = await tf.data.webcam(this.webcamRef.current);
+    this.setState({Webcam: webcam});
+    this.setState({VideoCapture: true});
+  }
+}
 
   componentDidMount(){
-    this.app();
+    document.addEventListener("keydown", this._handleKeyDown);
+
+    if(typeof InstallTrigger !== 'undefined'){
+      alert("This demo does not currently support firefox.\r\nWe recommended running it in Chrome instead.");
+      this.setState({Prediction: "This demo  does not currently support firefox."});
+    }
+    else{
+      this.runModel();
+    }
   }
 
-  async app() {
-    console.log('Loading mobilenet..');
-  
-    // Load the model.
-    net = await mobilenet.load();
-    console.log('Successfully loaded model');
-  
-    // Create an object from Tensorflow.js data API which could capture image 
-    // from the web camera as Tensor.
-    const webcam = await tf.data.webcam(this.webcam.current);
-  
+  async runModel() {
+    const net = await mobilenet.load();
+    const webcam = await this.maybeLoadWebcam();  
+
     // Reads an image from the webcam and associates it with a specific class
     // index.
     const addExample = async classId => {
-      // Capture an image from the web camera.
-      const img = await webcam.capture();
-  
-      // Get the intermediate activation of MobileNet 'conv_preds' and pass that
-      // to the KNN classifier.
-      const activation = net.infer(img, 'conv_preds');
-  
-      // Pass the intermediate activation to the classifier.
-      classifier.addExample(activation, classId);
-  
-      // Dispose the tensor to release the memory.
-      img.dispose();
+      if (this.state.VideoCapture){
+    // Capture an image from the web camera.
+    const img = await this.state.Webcam.capture();
+      
+    // Get the intermediate activation of MobileNet 'conv_preds' and pass that
+    // to the KNN classifier.
+    const activation = net.infer(img, 'conv_preds');
+
+    // Pass the intermediate activation to the classifier.
+    classifier.addExample(activation, classId);
+
+    // Dispose the tensor to release the memory.
+    img.dispose();
+      }
     };
   
     // When clicking a button, add an example for that class.
@@ -61,14 +102,14 @@ class App extends Component {
     document.getElementById('class-b').addEventListener('click', () => addExample(1));
     document.getElementById('class-c').addEventListener('click', () => addExample(2));
   
-    while (this.state.Running) {
+    while (this.state.ModelRunning) {
       if (this.state.Reset){
         classifier.clearAllClasses();
         this.setState({Confidence: 0, Prediction: "none", Reset: false});
       }
-      if (classifier.getNumClasses() > 0) {
-        const img = await webcam.capture();
-  
+      if (classifier.getNumClasses() > 0 && this.state.VideoCapture) {
+        const img = await this.state.Webcam.capture();
+        
         // Get the activation from mobilenet from the webcam.
         const activation = net.infer(img, 'conv_preds');
         // Get the most likely class and confidence from the classifier module.
@@ -86,21 +127,13 @@ class App extends Component {
     this.setState({Prediction: "Model suspended.", Confidence: 0});
   }
 
-  toggleRunning = () => {
-    this.setState({Running: !this.state.Running});
-    if(!this.state.Running){
-      this.setState({Prediction: "none"});
-      this.app();
-    }
-  }
-
   getConfidence(){
-    return "Confidence: " +  (this.state.Running ? 
+    return "Confidence: " +  (this.state.ModelRunning ? 
             (this.state.Confidence * 100).toFixed(0) + "%" : " --- ");
   }
 
   getPrediction(){
-    return this.state.Running ? 
+    return this.state.ModelRunning ? 
     "Prediction: " + (this.state.Prediction) : "Model suspended";
   }
 
@@ -119,20 +152,26 @@ class App extends Component {
 
       </header>
       <div className="App-main">
-      <video ref={this.webcam} autoPlay playsInline muted id="webcam" width="224" height="224"></video>
+      <video ref={this.webcamRef}
+        autoPlay
+        playsInline 
+        muted 
+        id="webcam"
+        poster={videoLoadingImage}
+        width="224" 
+        height="224">
+      </video>
+
       <label className="label" htmlFor="prediction">{this.state.Prediction}<br></br>{this.getConfidence()}</label>
       <div className="buttons">
       <button id="class-a" >Class A</button>&nbsp;&nbsp;
       <button id="class-b">Class B</button>&nbsp;&nbsp;
       <button id="class-c">Class C</button></div>
       <br></br>
-    <button id="toggleRunning" onClick={this.toggleRunning}>Start/Stop</button>&nbsp;&nbsp;
-    <button id="reset" onClick={this.requestReset}>Reset model</button>
+      <button id="reset" onClick={this.requestReset}>Reset model</button>
 
       </div>
     </div>
-
-    
   );
 }
 }
