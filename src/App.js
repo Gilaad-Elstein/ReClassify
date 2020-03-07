@@ -195,7 +195,7 @@ class App extends Component {
           It can learn to tell the difference between facial
           expressions such as a smile or a frown, it can tell
           genders apart, differentiate hand gestures or classify
-          inanimate objects with very little training.~n~n
+          inanimate objects with as little as 5-10 training examples per class.~n~n
          
           Point your camera at an object or scene and
           click one of the class buttons.~n~n
@@ -211,7 +211,7 @@ class App extends Component {
           
           When you are done simply point your camera at an
           object of one of the classes and see the model's
-          prediction.~n~n
+          prediction. The more you click, the better it predicts!~n~n
           
           Enjoy!"
           closePopup={this.togglePopup.bind(this)}  
