@@ -3,7 +3,16 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs'
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
 
-import videoLoadingImage from './img/camera.png'
+
+import {
+  BrowserView,
+  MobileView,
+  isBrowser,
+  isMobile
+} from "react-device-detect";
+
+import videoLoadingImage from './img/camera.png';
+import cameraFlipIcon from './img/flipCamera.png';
 
 
 import './App.css';
@@ -23,6 +32,7 @@ class App extends Component {
       VideoCapture: true,
       Reset: false,
       Webcam: null,
+      FacingMode: 'environment',
     }
     this.webcamRef = React.createRef();
   }
@@ -39,19 +49,36 @@ class App extends Component {
       }
   }
 
-  async maybeLoadWebcam(){
-    if (this.state.Webcam === null){
-      // Create an object from Tensorflow.js data API which could capture image 
-      // from the web camera as Tensor.
-      const webcam = await tf.data.webcam(this.webcamRef.current);
-      this.setState({Webcam: webcam});
-      this.setState({Prediction: "none"})
+  toggleCameraMode = () => {
+    if (isBrowser){
+      return;
     }
-    return this.state.Webcam;
+    if(this.state.FacingMode === 'environment'){
+      this.setState({FacingMode: 'user'}, ()=>{
+        this.state.Webcam.stop();
+        this.maybeLoadWebcam(true);
+      });
+    }
+    else{
+      this.setState({FacingMode: 'environment'}, ()=>{
+        this.state.Webcam.stop();
+        this.maybeLoadWebcam(true);
+      });
+    }
   }
 
+  async maybeLoadWebcam(force){
+    if (this.state.Webcam == null || force){
+      // Create an object from Tensorflow.js data API which could capture image 
+      // from the web camera as Tensor.
+      const webcam = await tf.data.webcam(this.webcamRef.current, {facingMode: this.state.FacingMode});
+      this.setState({Webcam: webcam});
+      }
+      return this.state.Webcam;
+    }
+
   async toggleVideoCapture(){
-  if(this.state.VideoCapture){
+  if(this.state.VideoCapture && this.state.Webcam !== null){
     this.state.Webcam.stop();
     this.setState({VideoCapture: false});
   }
@@ -76,8 +103,9 @@ class App extends Component {
 
   async runModel() {
     const net = await mobilenet.load();
-    const webcam = await this.maybeLoadWebcam();  
-
+    if(this.state.Webcam == null){
+      await this.maybeLoadWebcam();
+    }
     // Reads an image from the webcam and associates it with a specific class
     // index.
     const addExample = async classId => {
@@ -111,12 +139,21 @@ class App extends Component {
         const img = await this.state.Webcam.capture();
         
         // Get the activation from mobilenet from the webcam.
-        const activation = net.infer(img, 'conv_preds');
+        var activation;
+        try{
+          activation = net.infer(img, 'conv_preds');
+        }
+        catch{
+          setTimeout(() => {
+            this.runModel();
+          }, 1000);
+          return;
+        }
         // Get the most likely class and confidence from the classifier module.
         const result = await classifier.predictClass(activation);
   
         const classes = ['A', 'B', 'C'];
-        console.log("prediction: " + classes[result.label] + "\n probability: " + result.confidences[result.label]);
+        //console.log("prediction: " + classes[result.label] + "\n probability: " + result.confidences[result.label]);
         this.setState({Prediction: classes[result.label], Confidence: result.confidences[result.label]})
         // Dispose the tensor to release the memory.
         img.dispose();
@@ -136,7 +173,7 @@ class App extends Component {
     return this.state.ModelRunning ? 
     "Prediction: " + (this.state.Prediction) : "Model suspended";
   }
-
+ 
   requestReset = () => {
     this.setState({Reset: true});
   }
@@ -152,6 +189,7 @@ class App extends Component {
 
       </header>
       <div className="App-main">
+
       <video ref={this.webcamRef}
         autoPlay
         playsInline 
@@ -161,6 +199,10 @@ class App extends Component {
         width="224" 
         height="224">
       </video>
+
+      <MobileView>
+      <div><input className="label" type="image" alt="&#8635;" width={50} height={50} id="toggleCameraMode" onClick={this.toggleCameraMode} src={cameraFlipIcon}></input></div>
+        </MobileView>
 
       <label className="label" htmlFor="prediction">{this.state.Prediction}<br></br>{this.getConfidence()}</label>
       <div className="buttons">
