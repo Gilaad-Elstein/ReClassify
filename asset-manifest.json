@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/ReClassify/static/css/main.e6978317.chunk.css",
-    "main.js": "/ReClassify/static/js/main.b38835fe.chunk.js",
-    "main.js.map": "/ReClassify/static/js/main.b38835fe.chunk.js.map",
+    "main.js": "/ReClassify/static/js/main.fd9c97cb.chunk.js",
+    "main.js.map": "/ReClassify/static/js/main.fd9c97cb.chunk.js.map",
     "runtime-main.js": "/ReClassify/static/js/runtime-main.a25530ff.js",
     "runtime-main.js.map": "/ReClassify/static/js/runtime-main.a25530ff.js.map",
     "static/js/2.d8c6c547.chunk.js": "/ReClassify/static/js/2.d8c6c547.chunk.js",
     "static/js/2.d8c6c547.chunk.js.map": "/ReClassify/static/js/2.d8c6c547.chunk.js.map",
     "index.html": "/ReClassify/index.html",
-    "precache-manifest.a3849962595a3deb0c6ee1e6956a1717.js": "/ReClassify/precache-manifest.a3849962595a3deb0c6ee1e6956a1717.js",
+    "precache-manifest.c20c1688f158c75af783b87de37da2cc.js": "/ReClassify/precache-manifest.c20c1688f158c75af783b87de37da2cc.js",
     "service-worker.js": "/ReClassify/service-worker.js",
     "static/css/main.e6978317.chunk.css.map": "/ReClassify/static/css/main.e6978317.chunk.css.map",
     "static/js/2.d8c6c547.chunk.js.LICENSE.txt": "/ReClassify/static/js/2.d8c6c547.chunk.js.LICENSE.txt",
@@ -18,6 +18,6 @@
     "static/js/runtime-main.a25530ff.js",
     "static/js/2.d8c6c547.chunk.js",
     "static/css/main.e6978317.chunk.css",
-    "static/js/main.b38835fe.chunk.js"
+    "static/js/main.fd9c97cb.chunk.js"
   ]
 }
