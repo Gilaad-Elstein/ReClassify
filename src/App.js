@@ -30,7 +30,10 @@ class App extends Component {
       Reset: false,
       Webcam: null,
       FacingMode: 'environment',
-      ShowPopup: true
+      ShowPopup: true,
+      A: 'Class A',
+      B: 'Class B',
+      C: 'Class C'
     }
     this.webcamRef = React.createRef();
   }
@@ -44,13 +47,9 @@ class App extends Component {
 
   _handleKeyDown = (event) => {
     var ESCAPE_KEY = 27;
-    var ENTER_KEY = 13;
       switch( event.keyCode ) {
           case ESCAPE_KEY:
               this.toggleVideoCapture();
-              break;
-          case ENTER_KEY:
-              this.togglePopup();
               break;
           default: 
               break;
@@ -110,7 +109,14 @@ class App extends Component {
   }
 
   async runModel() {
-    const net = await mobilenet.load();
+    var net;
+    try {
+      net = await mobilenet.load();
+    }
+    catch{
+      alert("Failed to load model. Are you online?\r\nRefresh to try again.")
+      return;
+    }
     if(this.state.Webcam == null){
       await this.maybeLoadWebcam();
     }
@@ -160,7 +166,7 @@ class App extends Component {
         // Get the most likely class and confidence from the classifier module.
         const result = await classifier.predictClass(activation);
   
-        const classes = ['A', 'B', 'C'];
+        const classes = [this.state.A, this.state.B, this.state.C];
         //console.log("prediction: " + classes[result.label] + "\n probability: " + result.confidences[result.label]);
         this.setState({Prediction: classes[result.label], Confidence: result.confidences[result.label]})
         // Dispose the tensor to release the memory.
@@ -183,7 +189,40 @@ class App extends Component {
   }
  
   requestReset = () => {
-    this.setState({Reset: true});
+    this.setState({Reset: true, A: 'Class A', B: 'Class B', C: 'Class C'});
+    document.getElementById('class-name-A').value = '';
+    document.getElementById('class-name-B').value = '';
+    document.getElementById('class-name-C').value = '';
+
+  }
+
+  submitClassName(e){
+    var name;
+    switch(e.target.id){
+      case 'class-name-A':
+        name = document.getElementById('class-name-A').value;
+        this.setState({A: name})
+        if (name === ''){
+          this.setState({A: 'Class A'});
+        }
+        break;
+      case 'class-name-B':
+        name = document.getElementById('class-name-B').value;
+        this.setState({B: name})
+        if (name === ''){
+          this.setState({B: 'Class B'});
+        }
+        break;
+      case 'class-name-C':
+        name = document.getElementById('class-name-C').value;
+        this.setState({C: name})
+        if (name === ''){
+          this.setState({C: 'Class C'});
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   render() {
@@ -244,10 +283,14 @@ class App extends Component {
 
       <label className="label" htmlFor="prediction">{this.state.Prediction}<br></br>{this.getConfidence()}</label>
       <div className="buttons">
-      <button id="class-a" >Class A</button>&nbsp;&nbsp;
-      <button id="class-b">Class B</button>&nbsp;&nbsp;
-      <button id="class-c">Class C</button></div>
-     
+      <p><button id="class-a" >{this.state.A}</button>&nbsp;&nbsp;
+      <button id="class-b">{this.state.B}</button>&nbsp;&nbsp;
+      <button id="class-c">{this.state.C}</button></p></div>
+      <div>
+      <input size={10} type="text" id="class-name-A" placeholder={this.state.A} onKeyUp={this.submitClassName.bind(this)}></input>&nbsp;&nbsp;
+      <input size={10} type="text" id="class-name-B" placeholder={this.state.B} onKeyUp={this.submitClassName.bind(this)}></input>&nbsp;&nbsp;
+      <input size={10} type="text" id="class-name-C" placeholder={this.state.C} onKeyUp={this.submitClassName.bind(this)}></input>&nbsp;&nbsp;
+      </div>
       <br></br>
       <button id="reset" onClick={this.requestReset}>Reset model</button>  
 
