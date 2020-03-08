@@ -247,7 +247,8 @@ class App extends Component {
           what it sees with that class.~n~n
           
           Try taking different perspectives on the object
-          to maximize the model's confidence.~n~n
+          to maximize the model's confidence.~n
+          Use the text boxes to name your classes.~n~n
          
           Repeat with a different object or scene and 
           a different class button.~n~n
@@ -279,14 +280,14 @@ class App extends Component {
 
       <MobileView>
       <div><input className="label" type="image" alt="&#8635;" width={50} height={50} id="toggleCameraMode" onClick={this.toggleCameraMode} src={cameraFlipIcon}></input></div>
-        </MobileView>
+      </MobileView>
 
       <label className="label" htmlFor="prediction">{this.state.Prediction}<br></br>{this.getConfidence()}</label>
       <div className="buttons">
       <p><button id="class-a" >{this.state.A}</button>&nbsp;&nbsp;
       <button id="class-b">{this.state.B}</button>&nbsp;&nbsp;
       <button id="class-c">{this.state.C}</button></p></div>
-      <div>
+      <div style={{textAlign: "center", lineHeight: 1.8}}>
       <input size={10} type="text" id="class-name-A" placeholder={this.state.A} onKeyUp={this.submitClassName.bind(this)}></input>&nbsp;&nbsp;
       <input size={10} type="text" id="class-name-B" placeholder={this.state.B} onKeyUp={this.submitClassName.bind(this)}></input>&nbsp;&nbsp;
       <input size={10} type="text" id="class-name-C" placeholder={this.state.C} onKeyUp={this.submitClassName.bind(this)}></input>&nbsp;&nbsp;
