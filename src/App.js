@@ -44,9 +44,13 @@ class App extends Component {
 
   _handleKeyDown = (event) => {
     var ESCAPE_KEY = 27;
+    var ENTER_KEY = 13;
       switch( event.keyCode ) {
           case ESCAPE_KEY:
               this.toggleVideoCapture();
+              break;
+          case ENTER_KEY:
+              this.togglePopup();
               break;
           default: 
               break;
@@ -243,6 +247,7 @@ class App extends Component {
       <button id="class-a" >Class A</button>&nbsp;&nbsp;
       <button id="class-b">Class B</button>&nbsp;&nbsp;
       <button id="class-c">Class C</button></div>
+     
       <br></br>
       <button id="reset" onClick={this.requestReset}>Reset model</button>  
 
